@@ -1,5 +1,5 @@
 import { Stack, SxProps, Theme } from "@mui/material";
-import Account from "./Account";
+import Account from "./account/Account";
 import Pages from "./Pages";
 
 interface SidebarProps {

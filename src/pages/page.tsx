@@ -1,29 +1,24 @@
-import { Collapse, Stack } from "@mui/material";
-import SidebarModal from "@/modules/sidebar/SidebarModal";
+import { Stack } from "@mui/material";
 import MainArea from "@/modules/main-area/MainArea";
-import Sidebar from "@/modules/sidebar/Sidebar";
-import { useSidebar } from "@/store/sidebar";
 import ClockArea from "@/modules/clock-area/ClockArea";
+import SidebarSection from "@/modules/sidebar/SidebarSection";
 
 // # Component
 export default function HomePage() {
-  const sidebarFixOpen = useSidebar((state) => state.inSideOpen);
-
   return (
     <Stack direction={"row"} sx={{ height: "100%" }}>
-      <SidebarModal />
-      <Collapse
-        in={sidebarFixOpen}
-        orientation="horizontal"
-        sx={{ display: { xs: "none", sm: "block" } }}
-      >
-        <Sidebar
-          isModal={false}
-          sx={{ width: sidebarFixOpen ? 274 : 0, bgcolor: "#fcfaf8" }}
-        />
-      </Collapse>
+      <SidebarSection />
       <MainArea sx={{ flex: 2 }} />
-      <ClockArea sx={{ flex: 1, display: { xs: "none", md: "block" } }} />
+      <ClockArea
+        sx={{
+          flex: 1,
+          display: { xs: "none", md: "block" },
+          pt: "1.75rem",
+          px: "1.25rem",
+          borderLeft: 1,
+          borderColor: "border.main",
+        }}
+      />
     </Stack>
   );
 }
