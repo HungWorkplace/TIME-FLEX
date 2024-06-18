@@ -6,6 +6,8 @@ import Bold from "@tiptap/extension-bold";
 import Paragraph from "@tiptap/extension-paragraph";
 import { useTasks } from "@/store/tasks";
 import { cn } from "@/lib/utils";
+import { useAddTaskValue } from "@/store/add-task-value";
+import { useEffect } from "react";
 
 interface AddTaskInputProps {
   className?: string;
@@ -14,6 +16,12 @@ interface AddTaskInputProps {
 // # Component
 export default function AddTaskInput({ className }: AddTaskInputProps) {
   const addTask = useTasks((state) => state.addTask);
+
+  const content = useAddTaskValue((state) => state.content);
+  const setContent = useAddTaskValue((state) => state.setContent);
+  const duration = useAddTaskValue((state) => state.duration);
+  const setDuration = useAddTaskValue((state) => state.setDuration);
+  const setEditor = useAddTaskValue((state) => state.setEditor);
 
   const editor = useEditor({
     editorProps: {
@@ -32,24 +40,38 @@ export default function AddTaskInput({ className }: AddTaskInputProps) {
         emptyEditorClass: "",
       }),
     ],
-    content: "",
+    content,
+    onUpdate({ editor }) {
+      if (editor.getHTML() === "<p></p>") return setContent("");
+
+      setContent(editor.getHTML());
+    },
   });
 
-  if (!editor) return null;
+  useEffect(() => {
+    if (!editor) return;
 
-  const text = editor.getHTML();
+    setEditor(editor);
+  }, [editor, setEditor]);
+
+  if (!editor) return <div className={className} />;
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (!text) return;
+    if (!content) return;
+
+    const formattedContent = content.replace("<p></p>", "").trim();
 
     if (event.key === "Enter") {
-      addTask(text);
+      addTask(formattedContent, duration);
       editor.commands.clearContent();
+      editor.commands.focus();
+      setDuration(0);
     }
   };
 
   return (
     <EditorContent
+      id="add-task-input"
       editor={editor}
       onKeyDown={handleKeyDown}
       className={cn(className)}

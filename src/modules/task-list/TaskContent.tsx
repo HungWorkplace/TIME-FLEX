@@ -3,37 +3,42 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import Document from "@tiptap/extension-document";
 import Text from "@tiptap/extension-text";
 import Paragraph from "@tiptap/extension-paragraph";
-import { Box, SxProps } from "@mui/material";
-import { Theme } from "@mui/system";
+import Bold from "@tiptap/extension-bold";
+import { cn } from "@/lib/utils";
+import { Task, useTasks } from "@/store/tasks";
 
 interface TaskContentProps {
-  sx?: SxProps<Theme>;
+  className?: string;
+  task: Task;
 }
 
 // # Component
-export default function TaskContent({ sx }: TaskContentProps) {
+export default function TaskContent({ className, task }: TaskContentProps) {
+  const updateTask = useTasks((state) => state.updateTask);
+
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class:
-          "text-[#191919] py-2 outline-none text-sm w-full border-b border-[#f8f8f8]", // className of the input field,
+        class: "text-[#191919] py-2 outline-none text-sm w-full", // className of the input field,
       },
     },
     extensions: [
       Document,
       Text,
       Paragraph,
+      Bold,
       Placeholder.configure({
         placeholder: "No Title",
         emptyEditorClass: "",
       }),
     ],
-    content: "",
+    content: task.title,
+    onUpdate({ editor }) {
+      if (editor.getHTML() === "<p></p>") return;
+
+      updateTask(task.id, { ...task, title: editor.getHTML() });
+    },
   });
 
-  return (
-    <Box sx={{ ...sx }}>
-      <EditorContent editor={editor} />
-    </Box>
-  );
+  return <EditorContent editor={editor} className={cn(className)} />;
 }

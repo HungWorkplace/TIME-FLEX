@@ -1,27 +1,36 @@
-import { Checkbox, Stack } from "@mui/material";
-import TaskContent from "./TaskContent";
-import { RxDragHandleDots2 } from "react-icons/rx";
+import { Task as TaskType, useTasks } from "@/store/tasks";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import { FaRegTrashCan } from "react-icons/fa6";
+import TaskTrigger from "./TaskTrigger";
+
+interface TaskProps {
+  task: TaskType;
+}
 
 // # Component
-export default function Task() {
-  return (
-    <>
-      <Stack
-        direction={"row"}
-        alignItems={"center"}
-        className="group"
-        sx={{
-          position: "relative",
-          pr: "0.75rem",
-          borderRadius: "0.375rem",
-          ":hover": { bgcolor: "#f8f8f8" },
-        }}
-      >
-        <RxDragHandleDots2 className="hidden group-hover:block text-[#757575] absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full cursor-move" />
+export default function Task({ task }: TaskProps) {
+  const deleteTask = useTasks((state) => state.deleteTask);
 
-        <Checkbox size="small" />
-        <TaskContent sx={{ flex: 1 }} />
-      </Stack>
-    </>
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger className="group">
+        <TaskTrigger task={task} />
+      </ContextMenuTrigger>
+
+      <ContextMenuContent>
+        <ContextMenuItem
+          onClick={() => deleteTask(task.id)}
+          className="cursor-pointer group"
+        >
+          <FaRegTrashCan className="mr-2 group-hover:text-red-500" />
+          <span className="group-hover:text-red-500">Delete</span>
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   );
 }

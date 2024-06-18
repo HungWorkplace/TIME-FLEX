@@ -8,7 +8,7 @@ export default function HomePage() {
   return (
     <Stack direction={"row"} sx={{ height: "100%" }}>
       <SidebarSection />
-      <MainArea sx={{ flex: 2 }} />
+      <MainArea sx={{ pl: 1.5, flex: 2 }} />
       <ClockArea
         sx={{
           flex: 1,

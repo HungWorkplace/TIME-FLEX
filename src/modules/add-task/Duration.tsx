@@ -1,56 +1,32 @@
-import {
-  Autocomplete,
-  Box,
-  SxProps,
-  TextField,
-  Theme,
-  styled,
-} from "@mui/material";
-import { useState } from "react";
+import { NumberInput } from "@/components/NumberInput";
+import { useAddTaskValue } from "@/store/add-task-value";
+import { useTasks } from "@/store/tasks";
 
-interface DurationProps {
-  sx?: SxProps<Theme>;
-}
+// # Component
+export default function Duration() {
+  const duration = useAddTaskValue((state) => state.duration);
+  const content = useAddTaskValue((state) => state.content);
+  const setDuration = useAddTaskValue((state) => state.setDuration);
+  const addTask = useTasks((state) => state.addTask);
+  const editor = useAddTaskValue((state) => state.editor);
 
-// const StyledOption = styled("li")(({ theme }) => ({
-//   backgroundColor: theme.palette.error.light, // Sử dụng màu từ theme của MUI
-//   "&.Mui-focused": {
-//     backgroundColor: theme.palette.error.dark,
-//   },
-// }));
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter") {
+      if (!content) return;
+      addTask(content, duration);
 
-export default function Duration({ sx }: DurationProps) {
-  const [value, setValue] = useState(0);
+      editor?.commands.clearContent();
+      editor?.commands.focus();
+    }
+  };
 
   return (
-    <Box sx={{ width: "4.5rem", ...sx }}>
-      <Autocomplete
-        freeSolo // Nếu bạn muốn cho phép người dùng nhập giá trị tùy ý, hãy giữ lại
-        options={Array.from({ length: 25 }, (_, i) => i * 5)}
-        value={value}
-        onChange={(_, newValue) => setValue(newValue)}
-        renderOption={(props, option) => (
-          <Box component={"li"} sx={{ fontSize: 14 }} {...props}>
-            {option}
-          </Box>
-        )}
-        renderInput={(params) => (
-          <TextField
-            sx={{
-              height: "42px",
-              backgroundColor: "#f8f8f8",
-              borderRadius: "0.375rem",
-              "& .MuiInputBase-root": {
-                p: 0,
-                height: "100%",
-                fontSize: 14,
-              },
-              "& fieldset": { border: "none" },
-            }}
-            {...params}
-          />
-        )}
-      />
-    </Box>
+    <NumberInput
+      min={0}
+      value={duration}
+      onKeyDown={handleKeyDown}
+      // onChange={(_, value) => setDuration(value || 0)}
+      onInputChange={(event) => setDuration(parseInt(event.target.value) || 0)}
+    />
   );
 }

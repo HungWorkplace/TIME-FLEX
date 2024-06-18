@@ -1,12 +1,11 @@
 import { formatDuration, formatTime } from "@/utils/formatTimer";
-import { showNotification } from "@/utils/showNofification";
-import { Box, IconButton, Stack, SxProps, Theme } from "@mui/material";
+import { Box, Stack, SxProps, Theme } from "@mui/material";
 import { styled } from "@mui/system";
 import { useEffect, useRef, useState } from "react";
 import { TfiBell } from "react-icons/tfi";
-import { FaPlay } from "react-icons/fa";
-import { FaPause } from "react-icons/fa";
-import { MdSettingsBackupRestore } from "react-icons/md";
+import RemoteButton from "./RemoteButton";
+import Task from "./Task";
+import { useTasks } from "@/store/tasks";
 
 const Square = styled(Box)({
   width: "100%",
@@ -31,12 +30,27 @@ interface ClockAreaProps {
 
 // # Component
 export default function ClockArea({ sx }: ClockAreaProps) {
+  const selectedTaskId = useTasks((state) => state.selectedTaskId);
+  const tasks = useTasks((state) => state.tasks);
+
   const [clockFontSize, setClockFontSize] = useState(0);
   const [endTimeFontSize, setEndTimeFontSize] = useState(0);
   const clockWrapperRef = useRef<HTMLDivElement | null>(null);
-  const [timer, setTimer] = useState(10000);
-  const endTime = useRef(formatTime(new Date().getTime() + timer));
-  const [isPlay, setIsPlay] = useState(false);
+  const [timer, setTimer] = useState(0);
+  const endTime = useRef("");
+
+  const selectedTask = tasks.find((task) => task.id === selectedTaskId);
+
+  useEffect(() => {
+    if (!selectedTask) {
+      setTimer(0);
+      return;
+    }
+
+    const durationMillisecond = selectedTask.duration * 60 * 1000;
+    setTimer(durationMillisecond);
+    endTime.current = formatTime(new Date().getTime() + durationMillisecond);
+  }, [selectedTask]);
 
   // This useEffect is used to calculate the font size of the clock
   useEffect(() => {
@@ -63,23 +77,6 @@ export default function ClockArea({ sx }: ClockAreaProps) {
       resizeObserver.unobserve(clockWrapper);
     };
   }, []);
-
-  // This useEffect is used to create a timer that counts down every second
-  useEffect(() => {
-    if (timer <= 0) {
-      // showNotification("Time's up!");
-      // new Audio("/src/assets/alarm-digital.mp3").play();
-      return;
-    }
-
-    const timeOutId = setTimeout(() => {
-      setTimer(timer - 1000);
-    }, 1000);
-
-    return () => {
-      clearTimeout(timeOutId);
-    };
-  }, [timer]);
 
   return (
     <Box sx={{ ...sx }}>
@@ -118,6 +115,9 @@ export default function ClockArea({ sx }: ClockAreaProps) {
                 transform: "translateX(-50%) translateY(100%)",
                 color: "#A1A1A1",
               }}
+              display={
+                selectedTask && selectedTask.duration > 0 ? "flex" : "none"
+              }
             >
               <TfiBell />
               <span>{endTime.current}</span>
@@ -126,31 +126,14 @@ export default function ClockArea({ sx }: ClockAreaProps) {
         </Stack>
       </Square>
 
-      <Stack
-        direction={"row"}
-        justifyContent={"center"}
-        spacing={2}
-        sx={{ mt: 2 }}
-      >
-        <IconButton
-          aria-label="play"
-          onClick={() => setIsPlay(!isPlay)}
-          sx={{ border: 1, borderColor: "border.main", borderRadius: "50%" }}
-        >
-          {isPlay ? (
-            <FaPause size={30} />
-          ) : (
-            <FaPlay size={30} className="pl-1" />
-          )}
-        </IconButton>
+      <RemoteButton
+        timer={timer}
+        setTimer={setTimer}
+        endTime={endTime}
+        task={selectedTask}
+      />
 
-        <IconButton
-          aria-label="reset"
-          sx={{ border: 1, borderColor: "border.main", borderRadius: "50%" }}
-        >
-          <MdSettingsBackupRestore size={30} />
-        </IconButton>
-      </Stack>
+      <Task selectedTask={selectedTask} className="mt-9" />
     </Box>
   );
 }

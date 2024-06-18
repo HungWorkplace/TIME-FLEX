@@ -15,11 +15,11 @@ export default function MainArea({ sx }: MainAreaProps) {
       <Header sx={{ my: "0.9375rem" }} />
       <Stack
         direction={"row"}
-        spacing={2}
+        spacing={1}
         sx={{ px: "1.25rem", mb: "1rem", width: "100%" }}
       >
         <AddTaskInput className="flex-1" />
-        <Duration sx={{}} />
+        <Duration />
       </Stack>
       <TaskList sx={{ mx: "1.25rem" }} />
     </Box>
