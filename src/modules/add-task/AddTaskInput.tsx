@@ -4,10 +4,12 @@ import Document from "@tiptap/extension-document";
 import Text from "@tiptap/extension-text";
 import Bold from "@tiptap/extension-bold";
 import Paragraph from "@tiptap/extension-paragraph";
+import History from "@tiptap/extension-history";
 import { useTasks } from "@/store/tasks";
 import { cn } from "@/lib/utils";
 import { useAddTaskValue } from "@/store/add-task-value";
 import { useEffect } from "react";
+import { json, useParams } from "react-router-dom";
 
 interface AddTaskInputProps {
   className?: string;
@@ -23,6 +25,8 @@ export default function AddTaskInput({ className }: AddTaskInputProps) {
   const setDuration = useAddTaskValue((state) => state.setDuration);
   const setEditor = useAddTaskValue((state) => state.setEditor);
 
+  const { slug } = useParams();
+
   const editor = useEditor({
     editorProps: {
       attributes: {
@@ -35,6 +39,7 @@ export default function AddTaskInput({ className }: AddTaskInputProps) {
       Text,
       Paragraph,
       Bold,
+      History,
       Placeholder.configure({
         placeholder: "+ Add task",
         emptyEditorClass: "",
@@ -62,12 +67,16 @@ export default function AddTaskInput({ className }: AddTaskInputProps) {
     const formattedContent = content.replace("<p></p>", "").trim();
 
     if (event.key === "Enter") {
-      addTask(formattedContent, duration);
+      if (!slug) return;
+
+      addTask(formattedContent, slug, duration);
       editor.commands.clearContent();
       editor.commands.focus();
       setDuration(0);
     }
   };
+
+  if (!slug) throw json({ message: "Page not found" }, { status: 404 });
 
   return (
     <EditorContent

@@ -1,19 +1,16 @@
 import { useSidebar } from "@/store/sidebar";
-import { IconButton, Stack, SxProps, Theme, Typography } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { HiOutlineMenu } from "react-icons/hi";
 
-interface HeaderProps {
-  sx?: SxProps<Theme>;
-}
-
 // # Component
-export default function Header({ sx }: HeaderProps) {
+export default function ToggleSidebarBtn() {
   const toggle = useSidebar((state) => state.closeModal);
   const sidebarFixOpen = useSidebar((state) => state.inSideOpen);
   const toggleSidebarFix = useSidebar((state) => state.closeInSide);
 
   return (
-    <Stack direction={"row"} spacing={1} alignItems={"center"} sx={{ ...sx }}>
+    <>
+      {/* Toggle Sidebar */}
       <IconButton
         onClick={() => toggle(true)}
         aria-label="side-bar"
@@ -22,6 +19,7 @@ export default function Header({ sx }: HeaderProps) {
         <HiOutlineMenu color="#757575" size={22} />
       </IconButton>
 
+      {/* Toggle Sidebar */}
       <IconButton
         onClick={() => toggleSidebarFix(!sidebarFixOpen)}
         aria-label="side-bar"
@@ -29,10 +27,6 @@ export default function Header({ sx }: HeaderProps) {
       >
         <HiOutlineMenu color="#757575" size={22} />
       </IconButton>
-
-      <Typography variant="h5" sx={{ fontWeight: "500", fontSize: 20 }}>
-        Task Manager
-      </Typography>
-    </Stack>
+    </>
   );
 }

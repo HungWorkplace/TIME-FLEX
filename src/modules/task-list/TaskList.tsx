@@ -1,6 +1,7 @@
 import { Stack, SxProps, Theme } from "@mui/material";
-import { useTasks } from "@/store/tasks";
-import Task from "./Task";
+import { Scrollbars } from "react-custom-scrollbars-2";
+import Complete from "./completed-tasks/Complete";
+import IncompleteTask from "./incomplete-tasks/IncompleteTask";
 
 interface TaskListProps {
   sx?: SxProps<Theme>;
@@ -8,13 +9,17 @@ interface TaskListProps {
 
 // # Component
 export default function TaskList({ sx }: TaskListProps) {
-  const tasks = useTasks((state) => state.tasks);
-
   return (
-    <Stack sx={{ ...sx }}>
-      {tasks.map((task) => (
-        <Task key={task.id} task={task} />
-      ))}
-    </Stack>
+    <Scrollbars>
+      <Stack
+        sx={{
+          pb: "3.125rem",
+          ...sx,
+        }}
+      >
+        <IncompleteTask />
+        <Complete sx={{ mt: "0.75rem" }} />
+      </Stack>
+    </Scrollbars>
   );
 }

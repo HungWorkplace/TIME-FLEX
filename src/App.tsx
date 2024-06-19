@@ -1,10 +1,31 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import HomePage from "./pages/page";
+import HomePage from "./app/page";
+import PagesRoot from "./app/pages/page";
+import PageIdRoot from "./app/pages/[slug]/page";
+import HomeLayout from "./app/layout";
+import ErrorBoundary from "./app/pages/[slug]/error";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage />,
+    element: <HomeLayout />,
+    children: [
+      {
+        path: "/",
+        element: <HomePage />,
+        children: [
+          {
+            path: "pages",
+            element: <PagesRoot />,
+          },
+          {
+            path: "pages/:slug",
+            element: <PageIdRoot />,
+            errorElement: <ErrorBoundary />,
+          },
+        ],
+      },
+    ],
   },
 ]);
 

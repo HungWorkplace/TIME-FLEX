@@ -4,6 +4,7 @@ import Document from "@tiptap/extension-document";
 import Text from "@tiptap/extension-text";
 import Paragraph from "@tiptap/extension-paragraph";
 import Bold from "@tiptap/extension-bold";
+import History from "@tiptap/extension-history";
 import { cn } from "@/lib/utils";
 import { Task, useTasks } from "@/store/tasks";
 
@@ -19,7 +20,7 @@ export default function TaskContent({ className, task }: TaskContentProps) {
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: "text-[#191919] py-2 outline-none text-sm w-full", // className of the input field,
+        class: "py-2 outline-none text-sm w-full", // className of the input field,
       },
     },
     extensions: [
@@ -27,6 +28,7 @@ export default function TaskContent({ className, task }: TaskContentProps) {
       Text,
       Paragraph,
       Bold,
+      History,
       Placeholder.configure({
         placeholder: "No Title",
         emptyEditorClass: "",

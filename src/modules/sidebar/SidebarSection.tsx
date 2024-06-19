@@ -17,7 +17,7 @@ export default function SidebarSection() {
       >
         <Sidebar
           isModal={false}
-          sx={{ width: sidebarFixOpen ? 274 : 0, bgcolor: "#fcfaf8" }}
+          sx={{ width: sidebarFixOpen ? 274 : 0, bgcolor: "#f8fafc" }}
         />
       </Collapse>
     </>

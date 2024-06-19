@@ -13,7 +13,7 @@ export default function Task({ className, selectedTask }: TaskProps) {
   return (
     <div
       dangerouslySetInnerHTML={{ __html: selectedTask.title }}
-      className={cn("text-center border-t pt-3", className)}
+      className={cn("text-center border-t text-lg pt-3", className)}
     />
   );
 }

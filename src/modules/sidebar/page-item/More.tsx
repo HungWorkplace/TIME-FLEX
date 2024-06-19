@@ -2,12 +2,35 @@ import { useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { Box, IconButton } from "@mui/material";
+import { Box, Button, IconButton } from "@mui/material";
+import { usePageItemContext } from "./context/page-item";
+import { usePages } from "@/store/pages";
+import { useNavigate } from "react-router-dom";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+interface MoreProps {
+  onEditable: (value: boolean) => void;
+}
 
 // # Component
-export default function More() {
+export default function More({ onEditable }: MoreProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  const page = usePageItemContext();
+  const [openDialog, setOpenDialog] = useState(false);
+  const deletePage = usePages((state) => state.deletePage);
+  const navigate = useNavigate();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -16,12 +39,23 @@ export default function More() {
     setAnchorEl(null);
   };
 
+  const handleRename = () => {
+    onEditable(true);
+    handleClose();
+  };
+
+  const handleDeletePage = () => {
+    navigate("/pages");
+    // deletePage(page.slug);
+    // setOpenDialog(false);
+    // onCloseMenu();
+  };
+
   return (
     <>
       <IconButton
         onClick={handleClick}
-        aria-label="more"
-        className="more-btn"
+        className="group-hover:visible"
         sx={{
           visibility: anchorEl ? "visible" : "hidden",
           color: "#9f9f9f",
@@ -58,7 +92,7 @@ export default function More() {
         }}
       >
         <MenuItem
-          onClick={handleClose}
+          onClick={handleRename}
           sx={{
             fontSize: "0.875rem",
             borderRadius: 1,
@@ -72,20 +106,38 @@ export default function More() {
           </Box>
         </MenuItem>
 
-        <MenuItem
-          onClick={handleClose}
-          sx={{
-            fontSize: "0.875rem",
-            borderRadius: 1,
-            height: "30px",
-            minHeight: "30px",
-            lineHeight: "30px",
-          }}
-        >
-          <Box component={"span"} sx={{ color: "#222222" }}>
-            Delete
-          </Box>
-        </MenuItem>
+        <AlertDialog>
+          <AlertDialogTrigger>
+            <MenuItem
+              sx={{
+                fontSize: "0.875rem",
+                borderRadius: 1,
+                height: "30px",
+                minHeight: "30px",
+                lineHeight: "30px",
+                color: "#222222",
+                ":hover": { color: "#ef4444" },
+              }}
+            >
+              <Box component={"span"}>Delete</Box>
+            </MenuItem>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete your
+                account and remove your data from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => navigate("/pages")}>
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction>Continue</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </Menu>
     </>
   );

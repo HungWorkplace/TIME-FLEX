@@ -10,16 +10,17 @@ import TaskTrigger from "./TaskTrigger";
 
 interface TaskProps {
   task: TaskType;
+  isOverlay?: boolean;
 }
 
 // # Component
-export default function Task({ task }: TaskProps) {
+export default function Task({ task, isOverlay }: TaskProps) {
   const deleteTask = useTasks((state) => state.deleteTask);
 
   return (
     <ContextMenu>
       <ContextMenuTrigger className="group">
-        <TaskTrigger task={task} />
+        <TaskTrigger task={task} isOverlay={isOverlay} />
       </ContextMenuTrigger>
 
       <ContextMenuContent>
