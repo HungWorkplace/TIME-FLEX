@@ -13,8 +13,8 @@ export default function HomeLayout() {
   const setUser = useUser((state) => state.setUser);
   const setTasks = useTasks((state) => state.setTasks);
   const setPages = usePages((state) => state.setPages);
-  const lastVisitedPageSlug = usePages((state) => state.lastVisitedPageSlug);
-  const pagesStore = usePages((state) => state.pages);
+  // const lastVisitedPageSlug = usePages((state) => state.lastVisitedPageSlug);
+  // const pagesStore = usePages((state) => state.pages);
 
   const navigate = useNavigate();
   const location = useLocation();
