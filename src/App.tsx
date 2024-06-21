@@ -17,11 +17,11 @@ const router = createBrowserRouter([
         element: <HomePage />,
         children: [
           {
-            path: "pages",
+            path: "/pages",
             element: <PagesRoot />,
           },
           {
-            path: "pages/:slug",
+            path: "/pages/:slug",
             element: <PageIdRoot />,
             errorElement: <ErrorBoundary />,
           },
