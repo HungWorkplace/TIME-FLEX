@@ -31,27 +31,27 @@ export default function HomeLayout() {
 
     // We have data in the store
     // Function to determine the correct navigation target
-    const getNavigationTarget = () => {
-      if (location.pathname === "/") {
-        const pageIndex = pagesStore.findIndex(
-          (page) => page.slug === lastVisitedPageSlug
-        );
+    // const getNavigationTarget = () => {
+    //   if (location.pathname === "/") {
+    //     const pageIndex = pagesStore.findIndex(
+    //       (page) => page.slug === lastVisitedPageSlug
+    //     );
 
-        if (pageIndex === -1) {
-          return pagesStore.length > 0
-            ? `/pages/${pagesStore[0].slug}`
-            : "/pages";
-        }
-        return `/pages/${lastVisitedPageSlug}`;
-      }
-      return null; // No navigation needed for other paths
-    };
+    //     if (pageIndex === -1) {
+    //       return pagesStore.length > 0
+    //         ? `/pages/${pagesStore[0].slug}`
+    //         : "/pages";
+    //     }
+    //     return `/pages/${lastVisitedPageSlug}`;
+    //   }
+    //   return null; // No navigation needed for other paths
+    // };
 
-    // Get the target and navigate if necessary
-    const target = getNavigationTarget();
-    if (target) {
-      navigate(target);
-    }
+    // // Get the target and navigate if necessary
+    // const target = getNavigationTarget();
+    // if (target) {
+    //   navigate(target);
+    // }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
