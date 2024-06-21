@@ -9,9 +9,17 @@ export default function ErrorBoundary() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    error.json().then((data) => {
-      setMessage(data.message);
-    });
+    const fetchData = async () => {
+      try {
+        const data = await error.json();
+        setMessage(data.message);
+      } catch (err) {
+        console.error("Error parsing JSON:", err);
+        setMessage("An unexpected error occurred.");
+      }
+    };
+
+    fetchData();
   }, [error]);
 
   return (

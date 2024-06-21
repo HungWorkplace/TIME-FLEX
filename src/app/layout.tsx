@@ -14,9 +14,7 @@ export default function HomeLayout() {
   const setTasks = useTasks((state) => state.setTasks);
   const setPages = usePages((state) => state.setPages);
   const lastVisitedPageSlug = usePages((state) => state.lastVisitedPageSlug);
-  const pageIndex = usePages((state) =>
-    state.pages.findIndex((page) => page.slug === lastVisitedPageSlug)
-  );
+  const pagesStore = usePages((state) => state.pages);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,11 +29,18 @@ export default function HomeLayout() {
       return;
     }
 
+    // We have data in the store
     // Function to determine the correct navigation target
     const getNavigationTarget = () => {
       if (location.pathname === "/") {
+        const pageIndex = pagesStore.findIndex(
+          (page) => page.slug === lastVisitedPageSlug
+        );
+
         if (pageIndex === -1) {
-          return pages.length > 0 ? `/pages/${pages[0].slug}` : "/pages";
+          return pagesStore.length > 0
+            ? `/pages/${pagesStore[0].slug}`
+            : "/pages";
         }
         return `/pages/${lastVisitedPageSlug}`;
       }

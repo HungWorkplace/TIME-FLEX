@@ -5,22 +5,6 @@ import { Outlet } from "react-router-dom";
 
 // # Component
 export default function HomePage() {
-  // const lastVisitedPageSlug = usePages((state) => state.lastVisitedPageSlug);
-  // const pageIndex = usePages((state) =>
-  //   state.pages.findIndex((page) => page.slug === lastVisitedPageSlug)
-  // );
-
-  // const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   if (pageIndex === -1) {
-  //     navigate("/pages");
-  //     return;
-  //   }
-
-  //   navigate(`/pages/${lastVisitedPageSlug}`);
-  // }, [lastVisitedPageSlug, pageIndex, navigate]);
-
   return (
     <Stack direction={"row"} sx={{ height: "100%" }}>
       <SidebarSection />
