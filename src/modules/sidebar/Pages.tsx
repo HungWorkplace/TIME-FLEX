@@ -34,7 +34,10 @@ export default function PageManager() {
         </Box>
 
         {/* Create page */}
-        <IconButton onClick={createPageAction} sx={{ visibility: "hidden" }}>
+        <IconButton
+          onClick={createPageAction}
+          sx={{ visibility: { xs: "visible", sm: "hidden" } }}
+        >
           <FaPlus size={12} />
         </IconButton>
       </Stack>

@@ -38,7 +38,7 @@ export default function PageTitle() {
       </NavLink>
       <More
         onEditable={toggleEditable}
-        className="absolute h-full pl-3 pr-5 inline-flex top-0 right-0 items-center invisible group-hover:visible"
+        className="absolute h-full pl-3 pr-5 inline-flex top-0 right-0 items-center visible md:invisible group-hover:visible"
       />
     </div>
   );

@@ -84,7 +84,7 @@ function DragIcon({ listeners }: DragIconProps) {
   return (
     <div
       {...listeners}
-      className="flex text-[#757575] opacity-0 hover:opacity-100 group-hover:opacity-100 absolute z-10 left-0 top-1/2 -translate-y-1/2 -translate-x-full cursor-move pr-2 h-full items-center"
+      className="flex text-[#757575] opacity-100 md:opacity-0 hover:opacity-100 group-hover:opacity-100 absolute z-10 left-0 top-1/2 -translate-y-1/2 -translate-x-full cursor-move pr-2 h-full items-center"
     >
       <RxDragHandleDots2 />
     </div>
