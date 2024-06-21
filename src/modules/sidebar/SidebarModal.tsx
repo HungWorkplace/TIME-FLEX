@@ -8,7 +8,7 @@ export default function SidebarModal() {
   const onClose = useSidebar((state) => state.closeModal);
 
   return (
-    <Drawer open={isOpen} onClose={() => onClose(false)}>
+    <Drawer open={isOpen} onClose={() => onClose(false)} sx={{ zIndex: 30 }}>
       <Sidebar sx={{ width: 306 }} isModal />
     </Drawer>
   );

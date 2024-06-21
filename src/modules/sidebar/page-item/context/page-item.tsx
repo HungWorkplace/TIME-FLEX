@@ -20,7 +20,6 @@ export const PageItemProvider: React.FC<PageItemProviderProps> = ({
 };
 
 // Custom hook
-// eslint-disable-next-line react-refresh/only-export-components
 export const usePageItemContext = (): Page => {
   const context = useContext(PageItemContext);
   if (context === null) {

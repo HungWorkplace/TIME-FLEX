@@ -4,11 +4,13 @@ import PagesRoot from "./app/pages/page";
 import PageIdRoot from "./app/pages/[slug]/page";
 import HomeLayout from "./app/layout";
 import ErrorBoundary from "./app/pages/[slug]/error";
+import HomeErrorBoundary from "./app/error";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <HomeLayout />,
+    errorElement: <HomeErrorBoundary />,
     children: [
       {
         path: "/",

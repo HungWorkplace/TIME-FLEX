@@ -1,4 +1,5 @@
-import { create } from "zustand";
+import { StateCreator, create } from "zustand";
+import { persist } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { produce } from "immer";
 
@@ -13,14 +14,15 @@ export type Task = {
 type TasksState = {
   tasks: Task[];
   selectedTaskId: string | null;
+  setSelectedTaskId: (id: string | null) => void;
   setTasks: (tasks: Task[]) => void;
   addTask: (title: string, pageSlug: string, duration?: number) => void;
   deleteTask: (id: string) => void;
-  setSelectedTaskId: (id: string | null) => void;
+  deleteTasksByPageSlug: (pageSlug: string) => void;
   updateTask: (id: string, task: Task) => void;
 };
 
-export const useTasks = create<TasksState>((set) => ({
+const store: StateCreator<TasksState> = (set) => ({
   tasks: [],
   selectedTaskId: null,
   setSelectedTaskId: (id) => set({ selectedTaskId: id }),
@@ -28,7 +30,7 @@ export const useTasks = create<TasksState>((set) => ({
   addTask: (title, pageSlug, duration) =>
     set((state) =>
       produce(state, (draft) => {
-        draft.tasks.push({
+        draft.tasks.unshift({
           id: uuidv4(),
           title,
           completed: false,
@@ -47,4 +49,12 @@ export const useTasks = create<TasksState>((set) => ({
   },
   deleteTask: (id) =>
     set((state) => ({ tasks: state.tasks.filter((task) => task.id !== id) })),
-}));
+  deleteTasksByPageSlug: (pageSlug) =>
+    set((state) => ({
+      tasks: state.tasks.filter((task) => task.pageSlug !== pageSlug),
+    })),
+});
+
+export const useTasks = create<TasksState, [["zustand/persist", TasksState]]>(
+  persist(store, { name: "tasks" })
+);

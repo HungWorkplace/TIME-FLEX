@@ -4,7 +4,10 @@ import { FaPlay } from "react-icons/fa";
 import { FaPause } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 import { Task } from "@/store/tasks";
-import { showNotification } from "@/utils/showNofification";
+import {
+  checkNotificationPermission,
+  showNotification,
+} from "@/utils/notificationPermission";
 import { formatTime } from "@/utils/formatTimer";
 
 interface RemoteButtonProps {
@@ -34,7 +37,7 @@ export default function RemoteButton({
     } else if (timer <= 0 && isRunning) {
       setIsRunning(false);
       clearTimeout(timeOutId.current!);
-      showNotification("Time's up!");
+      showNotification("Time's up!", "Your task is completed.");
       new Audio("/src/assets/alarm-digital.mp3").play();
     }
 
@@ -44,6 +47,8 @@ export default function RemoteButton({
   }, [isRunning, setTimer, timer]);
 
   const handleStart = () => {
+    checkNotificationPermission();
+
     if (!isRunning && timer > 0) {
       setIsRunning(true);
       endTime.current = formatTime(new Date().getTime() + timer);
@@ -71,8 +76,8 @@ export default function RemoteButton({
       spacing={2}
       sx={{ mt: 2, ...sx }}
     >
+      {/* start */}
       <IconButton
-        aria-label="play"
         onClick={handleStart}
         sx={{ border: 1, borderColor: "border.main", borderRadius: "50%" }}
         disabled={!task || task.duration <= 0}
@@ -84,8 +89,8 @@ export default function RemoteButton({
         )}
       </IconButton>
 
+      {/* reset */}
       <IconButton
-        aria-label="reset"
         onClick={handleReset}
         sx={{ border: 1, borderColor: "border.main", borderRadius: "50%" }}
         disabled={!task || task.duration <= 0}

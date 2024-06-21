@@ -7,6 +7,7 @@ import Bold from "@tiptap/extension-bold";
 import History from "@tiptap/extension-history";
 import { cn } from "@/lib/utils";
 import { Task, useTasks } from "@/store/tasks";
+import { useState } from "react";
 
 interface TaskContentProps {
   className?: string;
@@ -16,6 +17,7 @@ interface TaskContentProps {
 // # Component
 export default function TaskContent({ className, task }: TaskContentProps) {
   const updateTask = useTasks((state) => state.updateTask);
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
 
   const editor = useEditor({
     editorProps: {
@@ -36,9 +38,15 @@ export default function TaskContent({ className, task }: TaskContentProps) {
     ],
     content: task.title,
     onUpdate({ editor }) {
-      if (editor.getHTML() === "<p></p>") return;
+      if (editor.getText() === "") return;
 
-      updateTask(task.id, { ...task, title: editor.getHTML() });
+      if (timeoutId) clearTimeout(timeoutId);
+
+      const id = setTimeout(() => {
+        updateTask(task.id, { ...task, title: editor.getHTML() });
+      }, 300);
+
+      setTimeoutId(id);
     },
   });
 

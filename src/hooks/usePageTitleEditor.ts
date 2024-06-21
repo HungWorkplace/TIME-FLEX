@@ -1,5 +1,5 @@
 import { Page, usePages } from "@/store/pages";
-import { useEditor } from "@tiptap/react";
+import { Extension, useEditor } from "@tiptap/react";
 import Placeholder from "@tiptap/extension-placeholder";
 import Document from "@tiptap/extension-document";
 import Text from "@tiptap/extension-text";
@@ -9,12 +9,27 @@ import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 import { json } from "react-router-dom";
 
+// Custom extension to handle Enter key
+const EnterBlurExtension = Extension.create({
+  name: "enterBlur",
+
+  addKeyboardShortcuts() {
+    return {
+      Enter: () => {
+        this.editor.commands.blur();
+        return true; // Prevent default behavior
+      },
+    };
+  },
+});
+
 interface UsePageTitleEditorProps {
   inputClass?: string;
   page: Page | undefined;
   editable: boolean;
 }
 
+// #Hook
 export default function usePageTitleEditor({
   inputClass,
   page,
@@ -38,6 +53,7 @@ export default function usePageTitleEditor({
         placeholder: "Untitled",
         emptyEditorClass: "",
       }),
+      EnterBlurExtension,
     ],
     onBlur({ editor }) {
       if (!page) return;

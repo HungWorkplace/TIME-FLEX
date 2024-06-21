@@ -1,5 +1,5 @@
 import Placeholder from "@tiptap/extension-placeholder";
-import { EditorContent, useEditor } from "@tiptap/react";
+import { EditorContent, Extension, useEditor } from "@tiptap/react";
 import Document from "@tiptap/extension-document";
 import Text from "@tiptap/extension-text";
 import Bold from "@tiptap/extension-bold";
@@ -11,6 +11,21 @@ import { useAddTaskValue } from "@/store/add-task-value";
 import { useEffect } from "react";
 import { json, useParams } from "react-router-dom";
 
+// Custom extension to handle Enter key
+const EnterExtension = Extension.create({
+  name: "enterToAdd",
+
+  addKeyboardShortcuts() {
+    return {
+      Enter: () => {
+        this.editor.commands.focus();
+
+        return true; // Prevent default behavior
+      },
+    };
+  },
+});
+
 interface AddTaskInputProps {
   className?: string;
 }
@@ -19,8 +34,6 @@ interface AddTaskInputProps {
 export default function AddTaskInput({ className }: AddTaskInputProps) {
   const addTask = useTasks((state) => state.addTask);
 
-  const content = useAddTaskValue((state) => state.content);
-  const setContent = useAddTaskValue((state) => state.setContent);
   const duration = useAddTaskValue((state) => state.duration);
   const setDuration = useAddTaskValue((state) => state.setDuration);
   const setEditor = useAddTaskValue((state) => state.setEditor);
@@ -44,13 +57,8 @@ export default function AddTaskInput({ className }: AddTaskInputProps) {
         placeholder: "+ Add task",
         emptyEditorClass: "",
       }),
+      EnterExtension,
     ],
-    content,
-    onUpdate({ editor }) {
-      if (editor.getHTML() === "<p></p>") return setContent("");
-
-      setContent(editor.getHTML());
-    },
   });
 
   useEffect(() => {
@@ -62,16 +70,16 @@ export default function AddTaskInput({ className }: AddTaskInputProps) {
   if (!editor) return <div className={className} />;
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (!content) return;
-
-    const formattedContent = content.replace("<p></p>", "").trim();
-
     if (event.key === "Enter") {
       if (!slug) return;
 
+      if (editor.getText().trim() === "") return;
+
+      const formattedContent = editor.getHTML().replace("<p></p>", "").trim();
+
       addTask(formattedContent, slug, duration);
+
       editor.commands.clearContent();
-      editor.commands.focus();
       setDuration(0);
     }
   };

@@ -1,24 +1,11 @@
 import { Box, IconButton, Stack } from "@mui/material";
 import PageList from "./page-item/PageItem";
 import { FaPlus } from "react-icons/fa";
-import { usePages } from "@/store/pages";
-import { useNavigate } from "react-router-dom";
-import { usePageTitleEditorStore } from "@/store/pageTitleEditor";
+import { useCreatePage } from "@/hooks/useCreatePage";
 
 // # Component
 export default function PageManager() {
-  const createPage = usePages((state) => state.createPage);
-  const editor = usePageTitleEditorStore((state) => state.editor);
-  const navigate = useNavigate();
-
-  const handleCreateBtn = () => {
-    const slug = "untitled-" + Date.now();
-
-    createPage("Untitled", slug);
-    navigate(`/pages/${slug}`);
-
-    editor?.commands.focus();
-  };
+  const createPageAction = useCreatePage();
 
   return (
     <>
@@ -46,7 +33,8 @@ export default function PageManager() {
           Pages
         </Box>
 
-        <IconButton onClick={handleCreateBtn} sx={{ visibility: "hidden" }}>
+        {/* Create page */}
+        <IconButton onClick={createPageAction} sx={{ visibility: "hidden" }}>
           <FaPlus size={12} />
         </IconButton>
       </Stack>

@@ -1,4 +1,5 @@
-import { create } from "zustand";
+import { StateCreator, create } from "zustand";
+import { persist } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { produce } from "immer";
 
@@ -10,16 +11,20 @@ export type Page = {
 
 type PagesState = {
   pages: Page[];
+  lastVisitedPageSlug: string | undefined;
   setPages: (pages: Page[]) => void;
+  setLastVisitedPageSlug: (slug: string | undefined) => void;
   createPage: (title: string, slug?: string) => void;
   updatePage: (slug: string, page: Page) => void;
   deletePage: (slug: string) => void;
   updateSlug: (oldSlug: string, newSlug: string) => void;
 };
 
-export const usePages = create<PagesState>((set) => ({
+const store: StateCreator<PagesState> = (set) => ({
   pages: [],
+  lastVisitedPageSlug: undefined,
   setPages: (pages) => set({ pages }),
+  setLastVisitedPageSlug: (slug) => set({ lastVisitedPageSlug: slug }),
   createPage: (title, slug) =>
     set((state) =>
       produce(state, (draft) => {
@@ -51,4 +56,8 @@ export const usePages = create<PagesState>((set) => ({
         draft.pages[index].slug = newSlug;
       })
     ),
-}));
+});
+
+export const usePages = create<PagesState, [["zustand/persist", PagesState]]>(
+  persist(store, { name: "pages" })
+);

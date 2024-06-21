@@ -1,17 +1,19 @@
-import { useRouteError } from "react-router-dom";
+import { ErrorLayout, GoBackButton } from "@/components/layout/ErrorLayout";
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
-import { ErrorLayout, GoBackButton } from "@/components/layout/ErrorLayout";
+import { isRouteErrorResponse, useRouteError } from "react-router-dom";
 
 // # Component
-export default function ErrorBoundary() {
-  const error = useRouteError() as Response;
+export default function HomeErrorBoundary() {
+  const error = useRouteError();
   const [message, setMessage] = useState("");
+  const [statusCode, setStatusCode] = useState<number | null>(null);
 
   useEffect(() => {
-    error.json().then((data) => {
-      setMessage(data.message);
-    });
+    if (isRouteErrorResponse(error)) {
+      setStatusCode(error.status);
+      setMessage(error.statusText);
+    }
   }, [error]);
 
   return (
@@ -22,7 +24,7 @@ export default function ErrorBoundary() {
         className="max-w-64 w-full"
       />
       <Box sx={{ textAlign: "center" }}>
-        <h1 className="text-4xl font-bold">404</h1>
+        <h1 className="text-4xl font-bold">{statusCode}</h1>
         <p className="text-lg font-medium">{message}</p>
       </Box>
 

@@ -1,4 +1,4 @@
-import { Box, Checkbox, Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import TaskContent from "./TaskContent";
 import Duration from "./Duration";
@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
+import CheckboxTask from "./CheckboxTask";
+import StartClock from "./StartClock";
 
 interface TaskTriggerProps {
   task: Task;
@@ -17,7 +19,6 @@ interface TaskTriggerProps {
 export default function TaskTrigger({ task, isOverlay }: TaskTriggerProps) {
   const setSelectedTaskId = useTasks((state) => state.setSelectedTaskId);
   const selectedTaskId = useTasks((state) => state.selectedTaskId);
-  const updateTask = useTasks((state) => state.updateTask);
 
   const {
     setNodeRef,
@@ -27,11 +28,6 @@ export default function TaskTrigger({ task, isOverlay }: TaskTriggerProps) {
     transition,
     isDragging,
   } = useSortable({ id: task.id, data: { task } });
-
-  const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateTask(task.id, { ...task, completed: e.target.checked });
-    setSelectedTaskId(null);
-  };
 
   const style = {
     transform: CSS.Translate.toString(transform),
@@ -60,19 +56,8 @@ export default function TaskTrigger({ task, isOverlay }: TaskTriggerProps) {
     >
       <DragIcon listeners={listeners} />
 
-      <Checkbox
-        size="small"
-        checked={task.completed}
-        onChange={handleCheckbox}
-        sx={{
-          "&.Mui-checked": {
-            color: "#c2c6d0",
-          },
-          "&.Mui-checked:hover": {
-            color: "#6e7075",
-          },
-        }}
-      />
+      <CheckboxTask task={task} />
+
       <Box
         sx={{
           width: "100%",
@@ -83,7 +68,10 @@ export default function TaskTrigger({ task, isOverlay }: TaskTriggerProps) {
       >
         <TaskContent task={task} className="flex-1 cursor-text" />
       </Box>
+
       <Duration task={task} sx={{ alignSelf: "stretch" }} />
+
+      <StartClock />
     </Stack>
   );
 }

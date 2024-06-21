@@ -21,7 +21,7 @@ export default function PageTitle({ className }: PageTitleProps) {
   const editor = usePageTitleEditor({
     page,
     editable: true,
-    inputClass: "text-xl font-medium",
+    inputClass: "text-xl font-medium pr-4",
   });
 
   useEffect(() => {

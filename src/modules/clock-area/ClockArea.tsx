@@ -133,7 +133,7 @@ export default function ClockArea({ sx }: ClockAreaProps) {
         task={selectedTask}
       />
 
-      <Task selectedTask={selectedTask} className="mt-9" />
+      <Task selectedTask={selectedTask} className="mt-9 font-bold" />
     </Box>
   );
 }

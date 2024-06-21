@@ -1,11 +1,13 @@
-import { useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import { Box, Button, IconButton } from "@mui/material";
 import { usePageItemContext } from "./context/page-item";
 import { usePages } from "@/store/pages";
 import { useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,128 +19,76 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useTasks } from "@/store/tasks";
 
 interface MoreProps {
   onEditable: (value: boolean) => void;
+  className?: string;
 }
 
 // # Component
-export default function More({ onEditable }: MoreProps) {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
+export default function More({ onEditable, className }: MoreProps) {
   const page = usePageItemContext();
-  const [openDialog, setOpenDialog] = useState(false);
   const deletePage = usePages((state) => state.deletePage);
+  const deleteTasksByPageSlug = useTasks(
+    (state) => state.deleteTasksByPageSlug
+  );
   const navigate = useNavigate();
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleRename = () => {
-    onEditable(true);
-    handleClose();
-  };
-
-  const handleDeletePage = () => {
+  const handleDelete = () => {
+    deletePage(page.slug);
+    deleteTasksByPageSlug(page.slug);
     navigate("/pages");
-    // deletePage(page.slug);
-    // setOpenDialog(false);
-    // onCloseMenu();
   };
 
   return (
     <>
-      <IconButton
-        onClick={handleClick}
-        className="group-hover:visible"
-        sx={{
-          visibility: anchorEl ? "visible" : "hidden",
-          color: "#9f9f9f",
-          ":hover": { color: "#222222", bgcolor: "transparent" },
-        }}
-      >
-        <BsThreeDots size={16} />
-      </IconButton>
-
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-        sx={{
-          mt: -1,
-          ml: -1,
-          "& .MuiList-root": {
-            px: 0.5,
-            py: 0.5,
-            minHeight: 0,
-            width: "160px",
-          },
-          "& .MuiMenuItem-root": {
-            px: 1,
-          },
-        }}
-      >
-        <MenuItem
-          onClick={handleRename}
-          sx={{
-            fontSize: "0.875rem",
-            borderRadius: 1,
-            height: "30px",
-            minHeight: "30px",
-            lineHeight: "30px",
-          }}
+      <Popover>
+        <PopoverTrigger
+          className={cn("text-[#9f9f9f] hover:text-[#222222]", className)}
         >
-          <Box component={"span"} sx={{ color: "#222222" }}>
+          <BsThreeDots size={16} />
+        </PopoverTrigger>
+        <PopoverContent
+          align="start"
+          alignOffset={15}
+          sideOffset={-10}
+          className="w-36 text-sm p-1 z-50"
+        >
+          <div
+            onClick={() => onEditable(true)}
+            className="hover:bg-[#f8f8f8] rounded-md px-3 py-2 cursor-pointer"
+          >
             Rename
-          </Box>
-        </MenuItem>
+          </div>
 
-        <AlertDialog>
-          <AlertDialogTrigger>
-            <MenuItem
-              sx={{
-                fontSize: "0.875rem",
-                borderRadius: 1,
-                height: "30px",
-                minHeight: "30px",
-                lineHeight: "30px",
-                color: "#222222",
-                ":hover": { color: "#ef4444" },
-              }}
-            >
-              <Box component={"span"}>Delete</Box>
-            </MenuItem>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                account and remove your data from our servers.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel onClick={() => navigate("/pages")}>
-                Cancel
-              </AlertDialogCancel>
-              <AlertDialogAction>Continue</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </Menu>
+          <AlertDialog>
+            <AlertDialogTrigger className="hover:bg-[#f8f8f8] hover:text-red-500 rounded-md px-3 py-2 cursor-pointer">
+              Delete
+            </AlertDialogTrigger>
+
+            <AlertDialogContent className="max-w-md w-full">
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Delete page "{page.title}" ?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  All tasks in the page will be deleted
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDelete}
+                  variant={"destructive"}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </PopoverContent>
+      </Popover>
     </>
   );
 }

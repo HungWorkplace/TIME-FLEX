@@ -25,8 +25,10 @@ export default function IncompleteTask() {
   const [draggingTask, setDraggingTask] = useState<TaskType | null>(null);
   const { slug } = useParams();
 
-  const tasks = useTasks((state) =>
-    state.tasks.filter((task) => !task.completed && task.pageSlug === slug)
+  const tasks = useTasks((state) => state.tasks);
+
+  const filteredTasks = tasks.filter(
+    (task) => !task.completed && task.pageSlug === slug
   );
 
   const setTasks = useTasks((state) => state.setTasks);
@@ -65,6 +67,7 @@ export default function IncompleteTask() {
     if (!over) return;
     if (active.id === over.id) return;
 
+    // Do not use filteredTasks here, because it will cause the wrong order
     const oldIndex = tasks.findIndex((task) => task.id === active.id);
     const newIndex = tasks.findIndex((task) => task.id === over.id);
     const newOrder = arrayMove(tasks, oldIndex, newIndex);
@@ -86,10 +89,10 @@ export default function IncompleteTask() {
     >
       <SortableContext
         // have to use id rather than item itself
-        items={tasks.map((task) => task.id)}
+        items={filteredTasks.map((task) => task.id)}
         strategy={rectSortingStrategy}
       >
-        {tasks.map((task) => (
+        {filteredTasks.map((task) => (
           <Task key={task.id} task={task} />
         ))}
       </SortableContext>
