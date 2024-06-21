@@ -17,7 +17,7 @@ export default function ErrorBoundary() {
   return (
     <ErrorLayout>
       <img
-        src="/src/assets/page-not-found.png"
+        src="/assets/page-not-found.png"
         alt="page not found"
         className="max-w-64 w-full"
       />

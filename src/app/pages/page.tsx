@@ -9,7 +9,7 @@ export default function PagesRoot() {
   return (
     <ErrorLayout toggleButton>
       <img
-        src="/src/assets/creative-illustration.jpg"
+        src="/assets/creative-illustration.jpg"
         alt="creative banner"
         className="max-w-xs w-full"
       />

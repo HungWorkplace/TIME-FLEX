@@ -21,7 +21,7 @@ export default function Account({ isModal }: AccountProps) {
       >
         <Stack spacing={1} direction={"row"} alignItems={"center"}>
           <Avatar
-            src="/src/assets/no-avatar.jpg"
+            src="/assets/no-avatar.jpg"
             alt="logo"
             sx={{ width: 26, height: 26 }}
           />

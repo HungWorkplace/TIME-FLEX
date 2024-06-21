@@ -38,7 +38,7 @@ export default function RemoteButton({
       setIsRunning(false);
       clearTimeout(timeOutId.current!);
       showNotification("Time's up!", "Your task is completed.");
-      new Audio("/src/assets/alarm-digital.mp3").play();
+      new Audio("/assets/alarm-digital.mp3").play();
     }
 
     return () => {
